@@ -12,11 +12,11 @@ import { LivingCamera } from "@/components/Camera/LivingCamera";
 import { DustField } from "@/components/Particles/DustField";
 import { StarField } from "@/components/Stars/StarField";
 import { Asteroids } from "@/components/Universe/Asteroids";
-import { BirthEnergy } from "@/components/Universe/BirthEnergy";
+import { BigBangSequence } from "@/components/Universe/BigBangSequence";
 import { Galaxies } from "@/components/Universe/Galaxies";
 import { Nebulae } from "@/components/Universe/Nebulae";
 import { SolarSystem } from "@/components/Universe/SolarSystem";
-import { mix, smoothstep } from "@/utils/easing";
+import { smoothstep } from "@/utils/easing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 
@@ -32,8 +32,9 @@ export function UniverseScene({ progress }: UniverseSceneProps) {
   const solar = smoothstep(0.69, 0.78, progress);
   const farFuture = smoothstep(0.9, 1, progress);
   const blackout = smoothstep(0.975, 1, progress);
-  const starOpacity = mix(0.015, 1, firstStars) * (1 - farFuture * 0.82);
-  const dustOpacity = mix(0.025, 0.86, matter) * (1 - farFuture * 0.45);
+  const bigBangBloom = smoothstep(0.07, 0.2, progress) * (1 - smoothstep(0.29, 0.42, progress));
+  const starOpacity = firstStars * (1 - farFuture * 0.82);
+  const dustOpacity = matter * 0.86 * (1 - farFuture * 0.45);
   const nebulaOpacity = smoothstep(0.25, 0.54, progress) * (1 - farFuture * 0.76);
   const galaxyOpacity = galaxies * (1 - farFuture * 0.55);
   const asteroidOpacity = solar * (1 - smoothstep(0.9, 0.98, progress));
@@ -42,11 +43,11 @@ export function UniverseScene({ progress }: UniverseSceneProps) {
     <>
       <color attach="background" args={[firstLight < 0.08 ? "#000000" : "#000006"]} />
       <fog attach="fog" args={["#01020a", 120, 1100]} />
-      <ambientLight intensity={0.02 + firstLight * 0.1} color="#7284b8" />
+      <ambientLight intensity={firstLight * 0.11} color="#7284b8" />
       <pointLight position={[-38, 26, -80]} intensity={(0.4 + galaxies * 2.1) * (1 - blackout)} color="#d8e8ff" distance={260} />
       <pointLight position={[54, -30, -130]} intensity={(0.2 + nebulaOpacity * 1.3) * (1 - blackout)} color="#ffb38a" distance={260} />
       <LivingCamera progress={progress} />
-      <BirthEnergy progress={progress} />
+      <BigBangSequence progress={progress} />
       <Nebulae opacity={nebulaOpacity} />
       <Galaxies opacity={galaxyOpacity} />
       <StarField count={5200} depth={980} opacity={starOpacity} spread={360} speed={3.2 + progress * 3.8} scale={1.0} />
@@ -55,7 +56,7 @@ export function UniverseScene({ progress }: UniverseSceneProps) {
       <Asteroids opacity={asteroidOpacity} />
       <SolarSystem progress={progress} />
       <EffectComposer multisampling={0} enableNormalPass={false}>
-        <Bloom intensity={(0.25 + firstLight * 0.46 + nebulaOpacity * 0.18) * (1 - blackout)} luminanceThreshold={0.18} luminanceSmoothing={0.82} mipmapBlur />
+        <Bloom intensity={(bigBangBloom * 1.25 + firstLight * 0.24 + nebulaOpacity * 0.18) * (1 - blackout)} luminanceThreshold={0.13} luminanceSmoothing={0.84} mipmapBlur />
         <DepthOfField focusDistance={0.025} focalLength={0.028} bokehScale={1.1} height={540} />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}

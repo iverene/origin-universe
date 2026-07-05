@@ -17,6 +17,7 @@ body {
   background: black;
   color: white;
   overflow-x: hidden;
+  scrollbar-width: none;
 }
 
 html {
@@ -29,6 +30,11 @@ body {
   font-family: var(--font-body);
   font-synthesis: none;
   text-rendering: geometricPrecision;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 * {

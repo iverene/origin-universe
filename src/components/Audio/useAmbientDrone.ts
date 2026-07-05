@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { smoothstep } from "@/utils/easing";
 
 type AudioContextWindow = Window &
   typeof globalThis & {
     webkitAudioContext?: typeof AudioContext;
   };
 
-export function useAmbientDrone() {
+export function useAmbientDrone(progress = 0) {
+  const contextRef = useRef<AudioContext | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
+  const noiseRef = useRef<AudioBufferSourceNode | null>(null);
+
   useEffect(() => {
     let context: AudioContext | null = null;
     let gain: GainNode | null = null;
-    const oscillators: OscillatorNode[] = [];
     let started = false;
 
     const start = async () => {
@@ -23,7 +28,9 @@ export function useAmbientDrone() {
       if (!AudioCtor) return;
 
       context = new AudioCtor();
+      contextRef.current = context;
       gain = context.createGain();
+      gainRef.current = gain;
       gain.gain.value = 0;
       gain.connect(context.destination);
 
@@ -36,7 +43,7 @@ export function useAmbientDrone() {
         osc.connect(oscGain);
         oscGain.connect(gain!);
         osc.start();
-        oscillators.push(osc);
+        oscillatorsRef.current.push(osc);
       });
 
       const noiseBuffer = context.createBuffer(1, context.sampleRate * 2, context.sampleRate);
@@ -54,9 +61,9 @@ export function useAmbientDrone() {
       noise.connect(filter);
       filter.connect(gain);
       noise.start();
+      noiseRef.current = noise;
 
       await context.resume();
-      gain.gain.linearRampToValueAtTime(0.018, context.currentTime + 5);
     };
 
     const events: Array<keyof WindowEventMap> = [
@@ -71,6 +78,8 @@ export function useAmbientDrone() {
       window.addEventListener(eventName, start, { once: true, passive: true });
     });
 
+    const oscillators = oscillatorsRef.current;
+
     return () => {
       events.forEach((eventName) => window.removeEventListener(eventName, start));
       if (context && gain) {
@@ -78,9 +87,24 @@ export function useAmbientDrone() {
         gain.gain.linearRampToValueAtTime(0, context.currentTime + 0.35);
         window.setTimeout(() => {
           oscillators.forEach((osc) => osc.stop());
+          noiseRef.current?.stop();
           context?.close();
         }, 420);
       }
     };
   }, []);
+
+  useEffect(() => {
+    const context = contextRef.current;
+    const gain = gainRef.current;
+    if (!context || !gain) return;
+
+    const vibration = smoothstep(0.02, 0.09, progress) * 0.008;
+    const swell = smoothstep(0.08, 0.2, progress) * (1 - smoothstep(0.28, 0.44, progress)) * 0.02;
+    const resonance = smoothstep(0.26, 0.45, progress) * 0.012;
+    const volume = vibration + swell + resonance;
+
+    gain.gain.cancelScheduledValues(context.currentTime);
+    gain.gain.linearRampToValueAtTime(volume, context.currentTime + 0.35);
+  }, [progress]);
 }

@@ -12,7 +12,7 @@ export default function UniverseExperience() {
   const containerRef = useRef<HTMLElement>(null);
   const { activeEra, progress } = useCosmicTimeline(containerRef);
   const finalBlackout = smoothstep(0.985, 1, progress);
-  useAmbientDrone();
+  useAmbientDrone(progress);
 
   return (
     <main ref={containerRef} className="relative min-h-[1700vh] overflow-x-hidden bg-black text-white">

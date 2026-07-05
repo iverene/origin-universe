@@ -145,3 +145,54 @@ export const GALAXY_FRAGMENT = `
     gl_FragColor = vec4(vColor, alpha);
   }
 `;
+
+export const BIG_BANG_PARTICLE_VERTEX = `
+  attribute float aSize;
+  attribute float aSpeed;
+  attribute float aPhase;
+  attribute vec3 aColor;
+
+  uniform float uExpansion;
+  uniform float uMotion;
+  uniform float uOpacity;
+  uniform float uTime;
+
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  void main() {
+    vec3 direction = normalize(position);
+    float pulse = sin(uTime * 1.4 + aPhase) * 0.04;
+    float stretch = pow(uExpansion, 1.35) * aSpeed * 245.0;
+    vec3 current = direction * (stretch + pulse * 18.0);
+    current += vec3(
+      sin(uTime * 0.35 + aPhase) * 4.0,
+      cos(uTime * 0.28 + aPhase * 0.7) * 3.0,
+      sin(uTime * 0.22 + aPhase * 1.3) * 5.0
+    ) * uMotion;
+
+    vec4 mvPosition = modelViewMatrix * vec4(current, 1.0);
+    float perspective = 420.0 / max(34.0, -mvPosition.z);
+    gl_PointSize = aSize * perspective * (0.6 + uExpansion * 1.4);
+    gl_Position = projectionMatrix * mvPosition;
+
+    vColor = aColor;
+    vAlpha = uOpacity * (0.55 + sin(uTime * 1.2 + aPhase) * 0.16);
+  }
+`;
+
+export const BIG_BANG_PARTICLE_FRAGMENT = `
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  void main() {
+    vec2 uv = gl_PointCoord - 0.5;
+    float d = length(uv);
+    float core = smoothstep(0.42, 0.02, d);
+    float halo = smoothstep(0.5, 0.0, d) * 0.32;
+    float alpha = (core + halo) * vAlpha;
+
+    if (alpha < 0.01) discard;
+    gl_FragColor = vec4(vColor, alpha);
+  }
+`;

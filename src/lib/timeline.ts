@@ -9,7 +9,7 @@ export const cosmicEras: CosmicEra[] = [
   {
     id: "before-everything",
     start: 0,
-    marker: "∞",
+    marker: "Infinity",
     subtitle: "Before light... before matter... before time itself, there was only silence.",
   },
   {
@@ -17,7 +17,7 @@ export const cosmicEras: CosmicEra[] = [
     start: 0.07,
     marker: "13.8 Billion Years Ago",
     subtitle:
-      "From an unimaginably small point, space itself began to expand, carrying the seeds of every star, planet, and galaxy that would ever exist.",
+      "From an unimaginably small beginning,\nspace itself began to expand.\n\nEvery star...\nEvery galaxy...\nEvery planet...\nEvery atom of your body...\n\nbegan here.",
   },
   {
     id: "inflation",
