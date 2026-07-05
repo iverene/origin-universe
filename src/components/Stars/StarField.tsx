@@ -9,12 +9,13 @@ import * as THREE from "three";
 type StarFieldProps = {
   count: number;
   depth: number;
+  opacity?: number;
   spread: number;
   speed: number;
   scale: number;
 };
 
-export function StarField({ count, depth, spread, speed, scale }: StarFieldProps) {
+export function StarField({ count, depth, opacity = 1, spread, speed, scale }: StarFieldProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const data = useMemo(() => createStarData(count, depth, spread), [count, depth, spread]);
   const material = useMemo(
@@ -23,6 +24,7 @@ export function StarField({ count, depth, spread, speed, scale }: StarFieldProps
         uniforms: {
           uTime: { value: 0 },
           uDepth: { value: depth },
+          uOpacity: { value: opacity },
           uSpeed: { value: speed },
           uScale: { value: scale },
         },
@@ -32,12 +34,13 @@ export function StarField({ count, depth, spread, speed, scale }: StarFieldProps
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }),
-    [depth, scale, speed],
+    [depth, opacity, scale, speed],
   );
 
   useFrame(({ clock }) => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
+      materialRef.current.uniforms.uOpacity.value = opacity;
     }
   });
 

@@ -2,7 +2,11 @@
 
 import { useFrame, useThree } from "@react-three/fiber";
 
-export function LivingCamera() {
+type LivingCameraProps = {
+  progress: number;
+};
+
+export function LivingCamera({ progress }: LivingCameraProps) {
   const { camera } = useThree();
 
   useFrame(({ clock }) => {
@@ -10,7 +14,7 @@ export function LivingCamera() {
     camera.position.set(
       Math.sin(time * 0.045) * 2.8,
       Math.sin(time * 0.032) * 1.45 + Math.cos(time * 0.021) * 0.8,
-      18 + Math.sin(time * 0.018) * 1.2,
+      18 - progress * 180 + Math.sin(time * 0.018) * 1.2,
     );
     camera.rotation.set(
       Math.sin(time * 0.034) * 0.012,

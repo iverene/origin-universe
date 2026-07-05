@@ -2,18 +2,21 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useAmbientDrone } from "@/components/Audio/useAmbientDrone";
-import { IntroOverlay } from "@/components/UI/IntroOverlay";
+import { TimelineHud } from "@/components/UI/TimelineHud";
 import { UniverseScene } from "@/components/Universe/UniverseScene";
-import { useLenisAndScrollFade } from "@/hooks/useLenisAndScrollFade";
+import { useCosmicTimeline } from "@/hooks/useCosmicTimeline";
+import { smoothstep } from "@/utils/easing";
+import { useRef } from "react";
 
 export default function UniverseExperience() {
-  const uiHidden = useLenisAndScrollFade();
+  const containerRef = useRef<HTMLElement>(null);
+  const { activeEra, progress } = useCosmicTimeline(containerRef);
+  const finalBlackout = smoothstep(0.985, 1, progress);
   useAmbientDrone();
 
   return (
-    <main className="relative min-h-[190vh] overflow-x-hidden bg-black text-white">
+    <main ref={containerRef} className="relative min-h-[1700vh] overflow-x-hidden bg-black text-white">
       <div className="fixed inset-0">
-        <div className="absolute inset-0 z-[1] animate-[blackAwakening_6s_ease-out_forwards] bg-black" />
         <Canvas
           camera={{ position: [0, 0, 18], fov: 72, near: 0.1, far: 1400 }}
           dpr={[1, 1.75]}
@@ -25,11 +28,15 @@ export default function UniverseExperience() {
             depth: true,
           }}
         >
-          <UniverseScene />
+          <UniverseScene progress={progress} />
         </Canvas>
       </div>
-      <IntroOverlay hidden={uiHidden} />
-      <div aria-hidden className="absolute bottom-0 h-20 w-full bg-gradient-to-b from-transparent to-black/70" />
+      <TimelineHud activeEra={activeEra} progress={progress} />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-30 bg-black transition-opacity duration-500"
+        style={{ opacity: finalBlackout }}
+      />
     </main>
   );
 }

@@ -5,7 +5,11 @@ import { randomBetween } from "@/utils/random";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
-export function Asteroids() {
+type AsteroidsProps = {
+  opacity?: number;
+};
+
+export function Asteroids({ opacity = 1 }: AsteroidsProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const asteroids = useMemo(
@@ -70,7 +74,9 @@ export function Asteroids() {
         emissive="#111019"
         emissiveIntensity={0.08}
         metalness={0.05}
+        opacity={opacity}
         roughness={0.92}
+        transparent
       />
     </instancedMesh>
   );

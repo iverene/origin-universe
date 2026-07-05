@@ -7,32 +7,34 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
 type GalaxyProps = {
+  opacity: number;
   position: [number, number, number];
   rotation: [number, number, number];
   scale: number;
   spiral: boolean;
 };
 
-function Galaxy({ position, rotation, scale, spiral }: GalaxyProps) {
+function Galaxy({ opacity, position, rotation, scale, spiral }: GalaxyProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const groupRef = useRef<THREE.Group>(null);
   const data = useMemo(() => createGalaxyData(spiral ? 1200 : 850, spiral), [spiral]);
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 } },
+        uniforms: { uOpacity: { value: opacity }, uTime: { value: 0 } },
         vertexShader: GALAXY_VERTEX,
         fragmentShader: GALAXY_FRAGMENT,
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }),
-    [],
+    [opacity],
   );
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
     if (materialRef.current) {
+      materialRef.current.uniforms.uOpacity.value = opacity;
       materialRef.current.uniforms.uTime.value = time;
     }
     if (groupRef.current) {
@@ -54,12 +56,17 @@ function Galaxy({ position, rotation, scale, spiral }: GalaxyProps) {
   );
 }
 
-export function Galaxies() {
+type GalaxiesProps = {
+  opacity?: number;
+};
+
+export function Galaxies({ opacity = 1 }: GalaxiesProps) {
   return (
     <group>
-      <Galaxy position={[-112, -26, -620]} rotation={[0.24, -0.1, -0.26]} scale={0.78} spiral />
-      <Galaxy position={[118, 52, -780]} rotation={[0.1, 0.24, 0.3]} scale={1.04} spiral />
+      <Galaxy opacity={opacity} position={[-112, -26, -620]} rotation={[0.24, -0.1, -0.26]} scale={0.78} spiral />
+      <Galaxy opacity={opacity} position={[118, 52, -780]} rotation={[0.1, 0.24, 0.3]} scale={1.04} spiral />
       <Galaxy
+        opacity={opacity}
         position={[18, -76, -900]}
         rotation={[-0.1, 0.16, -0.08]}
         scale={1.34}

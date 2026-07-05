@@ -6,7 +6,7 @@ import { nebulaConfigs, type NebulaConfig } from "@/lib/universeConfig";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
-function NebulaLayer({ config }: { config: NebulaConfig }) {
+function NebulaLayer({ config, opacity }: { config: NebulaConfig; opacity: number }) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const material = useMemo(
     () =>
@@ -16,7 +16,7 @@ function NebulaLayer({ config }: { config: NebulaConfig }) {
           uColorA: { value: new THREE.Color(config.colors[0]) },
           uColorB: { value: new THREE.Color(config.colors[1]) },
           uColorC: { value: new THREE.Color(config.colors[2]) },
-          uOpacity: { value: config.opacity },
+          uOpacity: { value: config.opacity * opacity },
           uSeed: { value: config.seed },
           uDrift: { value: config.drift },
         },
@@ -27,12 +27,13 @@ function NebulaLayer({ config }: { config: NebulaConfig }) {
         side: THREE.DoubleSide,
         blending: THREE.AdditiveBlending,
       }),
-    [config],
+    [config, opacity],
   );
 
   useFrame(({ clock }) => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
+      materialRef.current.uniforms.uOpacity.value = config.opacity * opacity;
     }
   });
 
@@ -44,7 +45,11 @@ function NebulaLayer({ config }: { config: NebulaConfig }) {
   );
 }
 
-export function Nebulae() {
+type NebulaeProps = {
+  opacity?: number;
+};
+
+export function Nebulae({ opacity = 1 }: NebulaeProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame(({ clock }) => {
@@ -58,7 +63,7 @@ export function Nebulae() {
   return (
     <group ref={groupRef}>
       {nebulaConfigs.map((config) => (
-        <NebulaLayer key={config.seed} config={config} />
+        <NebulaLayer key={config.seed} config={config} opacity={opacity} />
       ))}
     </group>
   );

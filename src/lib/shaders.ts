@@ -8,6 +8,7 @@ export const STAR_VERTEX = `
   uniform float uDepth;
   uniform float uSpeed;
   uniform float uScale;
+  uniform float uOpacity;
 
   varying vec3 vColor;
   varying float vAlpha;
@@ -29,6 +30,7 @@ export const STAR_VERTEX = `
 `;
 
 export const STAR_FRAGMENT = `
+  uniform float uOpacity;
   varying vec3 vColor;
   varying float vAlpha;
 
@@ -39,7 +41,7 @@ export const STAR_FRAGMENT = `
     float halo = smoothstep(0.5, 0.0, d) * 0.35;
     float sparkle = pow(max(0.0, 1.0 - abs(uv.x) * 9.0), 5.0) * 0.14;
     sparkle += pow(max(0.0, 1.0 - abs(uv.y) * 9.0), 5.0) * 0.14;
-    float alpha = (core + halo + sparkle) * vAlpha;
+    float alpha = (core + halo + sparkle) * vAlpha * uOpacity;
 
     if (alpha < 0.015) discard;
     gl_FragColor = vec4(vColor * (0.9 + vAlpha * 0.45), alpha);
@@ -49,6 +51,7 @@ export const STAR_FRAGMENT = `
 export const NEBULA_VERTEX = `
   varying vec2 vUv;
   uniform float uTime;
+  uniform float uOpacity;
   uniform float uDrift;
 
   void main() {
@@ -131,12 +134,13 @@ export const GALAXY_VERTEX = `
 `;
 
 export const GALAXY_FRAGMENT = `
+  uniform float uOpacity;
   varying vec3 vColor;
   varying float vAlpha;
 
   void main() {
     float d = length(gl_PointCoord - 0.5);
-    float alpha = smoothstep(0.5, 0.0, d) * vAlpha;
+    float alpha = smoothstep(0.5, 0.0, d) * vAlpha * uOpacity;
     if (alpha < 0.01) discard;
     gl_FragColor = vec4(vColor, alpha);
   }
