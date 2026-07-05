@@ -196,3 +196,63 @@ export const BIG_BANG_PARTICLE_FRAGMENT = `
     gl_FragColor = vec4(vColor, alpha);
   }
 `;
+
+export const MATTER_PARTICLE_VERTEX = `
+  attribute float aSize;
+  attribute float aSpeed;
+  attribute float aPhase;
+  attribute float aKind;
+  attribute vec3 aColorHot;
+  attribute vec3 aColorCool;
+
+  uniform float uCooling;
+  uniform float uFlow;
+  uniform float uOpacity;
+  uniform float uTime;
+
+  varying vec3 vColor;
+  varying float vAlpha;
+  varying float vKind;
+
+  void main() {
+    vec3 p = position;
+    float current = uTime * (0.32 + aSpeed * 0.24) * (1.25 - uCooling * 0.68);
+    float stream = sin(p.y * 0.035 + current + aPhase) * cos(p.z * 0.022 - current * 0.8);
+    float spiral = atan(p.y, p.x) + current * 0.35 + aPhase * 0.2;
+    float pull = uCooling * 0.18;
+
+    p.x += sin(current + p.z * 0.025 + aPhase) * 9.0 * uFlow;
+    p.y += cos(current * 0.8 + p.x * 0.02 + aPhase) * 6.0 * uFlow;
+    p.z += stream * 14.0 * uFlow;
+
+    p.xy = mix(p.xy, vec2(cos(spiral), sin(spiral)) * length(p.xy) * 0.72, pull);
+    p *= 1.0 - uCooling * 0.08;
+
+    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+    float perspective = 380.0 / max(28.0, -mvPosition.z);
+    float flicker = 0.72 + sin(uTime * (1.4 + aKind * 0.8) + aPhase) * 0.24;
+    gl_PointSize = aSize * perspective * flicker * (1.0 - uCooling * 0.22);
+    gl_Position = projectionMatrix * mvPosition;
+
+    vColor = mix(aColorHot, aColorCool, uCooling);
+    vAlpha = uOpacity * flicker * (0.74 + aKind * 0.1);
+    vKind = aKind;
+  }
+`;
+
+export const MATTER_PARTICLE_FRAGMENT = `
+  varying vec3 vColor;
+  varying float vAlpha;
+  varying float vKind;
+
+  void main() {
+    vec2 uv = gl_PointCoord - 0.5;
+    float d = length(uv);
+    float core = smoothstep(0.38, 0.02, d);
+    float halo = smoothstep(0.5, 0.0, d) * (0.22 + vKind * 0.16);
+    float alpha = (core + halo) * vAlpha;
+
+    if (alpha < 0.01) discard;
+    gl_FragColor = vec4(vColor, alpha);
+  }
+`;

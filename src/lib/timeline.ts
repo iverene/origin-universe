@@ -29,9 +29,9 @@ export const cosmicEras: CosmicEra[] = [
   {
     id: "birth-of-matter",
     start: 0.2,
-    marker: "First Seconds",
+    marker: "A Few Seconds After the Big Bang",
     subtitle:
-      "As the universe cooled, the first particles emerged, laying the foundation for everything we know today.",
+      "As the universe expanded and cooled,\nenergy transformed into the first particles.\n\nFrom these tiny building blocks,\nevery star,\nevery planet,\nand every living thing\nwould one day emerge.",
   },
   {
     id: "first-atoms",

@@ -34,12 +34,12 @@ export function useAmbientDrone(progress = 0) {
       gain.gain.value = 0;
       gain.connect(context.destination);
 
-      [41.2, 55, 82.4].forEach((frequency, index) => {
+      [41.2, 55, 82.4, 164.8, 246.9].forEach((frequency, index) => {
         const osc = context!.createOscillator();
         const oscGain = context!.createGain();
-        osc.type = index === 1 ? "sine" : "triangle";
+        osc.type = index === 1 || index > 2 ? "sine" : "triangle";
         osc.frequency.value = frequency;
-        oscGain.gain.value = index === 0 ? 0.18 : 0.08;
+        oscGain.gain.value = index === 0 ? 0.18 : index > 2 ? 0.018 : 0.08;
         osc.connect(oscGain);
         oscGain.connect(gain!);
         osc.start();
@@ -101,8 +101,9 @@ export function useAmbientDrone(progress = 0) {
 
     const vibration = smoothstep(0.02, 0.09, progress) * 0.008;
     const swell = smoothstep(0.08, 0.2, progress) * (1 - smoothstep(0.28, 0.44, progress)) * 0.02;
-    const resonance = smoothstep(0.26, 0.45, progress) * 0.012;
-    const volume = vibration + swell + resonance;
+    const matterTexture = smoothstep(0.2, 0.34, progress) * (1 - smoothstep(0.44, 0.58, progress)) * 0.009;
+    const resonance = smoothstep(0.32, 0.5, progress) * 0.01;
+    const volume = vibration + swell + matterTexture + resonance;
 
     gain.gain.cancelScheduledValues(context.currentTime);
     gain.gain.linearRampToValueAtTime(volume, context.currentTime + 0.35);
