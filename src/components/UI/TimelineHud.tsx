@@ -20,9 +20,18 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
 
   return (
     <>
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 z-30 h-28 bg-gradient-to-b from-black/70 via-black/24 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-56 bg-gradient-to-t from-black/78 via-black/36 to-transparent"
+      />
+
       <div className="pointer-events-none fixed left-1/2 top-7 z-40 -translate-x-1/2 text-center md:top-9">
         <p
-          className="font-science text-[0.68rem] uppercase tracking-[0.24em] text-white/52 md:text-xs"
+          className="font-science text-[0.68rem] uppercase tracking-[0.24em] text-white/72 [text-shadow:0_2px_14px_rgba(0,0,0,0.95)] md:text-xs"
           data-science-value
           style={{ opacity: markerOpacity }}
         >
@@ -32,7 +41,7 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
 
       <div className="pointer-events-none fixed bottom-10 left-1/2 z-40 w-full max-w-4xl -translate-x-1/2 px-6 text-center md:bottom-14">
         <p
-          className="font-body mx-auto max-w-3xl whitespace-pre-line text-pretty text-sm leading-7 text-white/72 transition-opacity duration-700 md:text-base md:leading-8"
+          className="font-body mx-auto max-w-3xl whitespace-pre-line text-pretty text-sm font-medium leading-7 text-white/86 [text-shadow:0_2px_18px_rgba(0,0,0,0.98),0_0_30px_rgba(120,170,255,0.18)] transition-opacity duration-700 md:text-base md:leading-8"
           style={{ opacity: subtitleOpacity }}
         >
           {activeEra.subtitle}

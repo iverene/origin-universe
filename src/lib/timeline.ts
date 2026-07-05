@@ -36,88 +36,86 @@ export const cosmicEras: CosmicEra[] = [
   {
     id: "first-atoms",
     start: 0.27,
-    marker: "380,000 Years Later",
-    subtitle: "Light was finally free to travel, revealing the universe for the very first time.",
+    marker: "380,000 Years After the Big Bang",
+    subtitle: "The universe became transparent.\n\nLight was finally free to travel.",
   },
   {
     id: "dark-ages",
     start: 0.34,
     marker: "Millions of Years Later",
-    subtitle:
-      "For millions of years, the universe waited in silence, filled with invisible clouds of hydrogen and endless darkness.",
+    subtitle: "Millions of years passed.\n\nThe universe waited in silence.",
   },
   {
     id: "first-stars",
     start: 0.42,
     marker: "100 Million Years Later",
-    subtitle:
-      "Gravity gathered the first clouds of gas until the darkness was pierced by the universe's earliest stars.",
+    subtitle: "The first stars ignited.\n\nDarkness gave way to light.",
   },
   {
     id: "galaxies",
     start: 0.5,
     marker: "Hundreds of Millions of Years Later",
-    subtitle:
-      "Stars joined together, weaving magnificent galaxies that would shape the architecture of the cosmos.",
+    subtitle: "Gravity became the universe's sculptor.\n\nGalaxies were born.",
   },
   {
     id: "galaxy-clusters",
     start: 0.58,
     marker: "Billions of Years Later",
     subtitle:
-      "Galaxies gathered into enormous families, connected by invisible threads stretching across the universe.",
+      "Galaxies gathered into enormous families.\n\nThe cosmic web stretched across the darkness.",
   },
   {
     id: "milky-way",
     start: 0.65,
     marker: "13.6 Billion Years Ago",
-    subtitle: "Among countless galaxies, one spiral galaxy quietly took shape... our home.",
+    subtitle: "Among countless galaxies,\none spiral slowly became familiar.\n\nOur cosmic home began to take shape.",
   },
   {
     id: "solar-system",
     start: 0.72,
     marker: "4.6 Billion Years Ago",
     subtitle:
-      "Around an ordinary young star, dust and rock slowly came together to form a new family of worlds.",
+      "Around an ordinary young star,\ndust and rock gathered into a new family of worlds.",
   },
   {
     id: "earth",
     start: 0.78,
     marker: "4.5 Billion Years Ago",
-    subtitle: "A small blue world formed within the vast darkness, carrying the possibility of life.",
+    subtitle: "A small blue world turned in the dark.\n\nClouds moved.\nThe Moon kept watch nearby.",
   },
   {
     id: "life",
     start: 0.83,
     marker: "Billions of Years Pass",
     subtitle:
-      "From the simplest organisms to civilizations reaching for the stars, life found a way to flourish on a tiny pale blue dot.",
+      "On that tiny world,\nlife found a way to flourish beneath the clouds.",
   },
   {
     id: "today",
     start: 0.88,
     marker: "Present Day",
     subtitle:
-      "Everything you have ever known exists within this fragile world suspended in the endless universe.",
+      "Everything you have ever known\nexists on this fragile world\nsuspended in the endless universe.",
   },
   {
     id: "beyond-humanity",
     start: 0.92,
     marker: "Millions of Years Ahead",
-    subtitle: "Long after civilizations fade, the universe continues its silent journey through time.",
+    subtitle: "Long after Earth fades from view,\nthe universe continues its silent journey through time.",
   },
   {
     id: "far-future",
     start: 0.96,
     marker: "Trillions of Years Later",
-    subtitle: "Stars grow cold. Galaxies drift apart. The universe slowly returns to darkness.",
+    subtitle:
+      "Trillions of years passed.\n\nThe universe grew quiet.\n\nBut every atom of life\n\nhad once shared\nthe same beginning.",
   },
   {
     id: "final",
     start: 0.985,
-    marker: "Silence",
+    marker: "",
     subtitle:
-      "We are made of stardust, born from a universe billions of years in the making. For a brief moment in its endless story... we were here.",
+      "Look up tonight.\n\nEvery star you see\nis a message from the past.\n\nThe atoms that formed galaxies...\n\nformed you too.\n\nYou are not separate from the universe.\n\nYou are one of the ways\nit learned to see itself.",
   },
 ];
 
