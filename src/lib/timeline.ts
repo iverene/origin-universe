@@ -14,7 +14,7 @@ export const cosmicEras: CosmicEra[] = [
   },
   {
     id: "big-bang",
-    start: 0.07,
+    start: 0.035,
     marker: "13.8 Billion Years Ago",
     subtitle:
       "From an unimaginably small beginning,\nspace itself began to expand.\n\nEvery star...\nEvery galaxy...\nEvery planet...\nEvery atom of your body...\n\nbegan here.",

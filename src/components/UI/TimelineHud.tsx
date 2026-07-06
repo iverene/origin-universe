@@ -15,9 +15,9 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
   const introOpacity = 1 - smoothstep(0, 0.004, progress);
   const subtitleOpacity =
     activeEra.id === "final"
-      ? smoothstep(0.08, 0.28, localProgress)
-      : smoothstep(0.06, 0.2, localProgress) * (1 - smoothstep(0.68, 0.92, localProgress));
-  const markerOpacity = smoothstep(0.035, 0.08, progress);
+      ? smoothstep(0.04, 0.16, localProgress)
+      : smoothstep(0.015, 0.1, localProgress) * (1 - smoothstep(0.72, 0.94, localProgress));
+  const markerOpacity = smoothstep(0.006, 0.02, progress);
 
   return (
     <>
