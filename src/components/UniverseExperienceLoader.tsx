@@ -1,10 +1,11 @@
 "use client";
 
+import BlankIntroExperience from "@/components/Scene/BlankIntroExperience";
 import dynamic from "next/dynamic";
 
 const UniverseExperience = dynamic(() => import("./Scene/UniverseExperience"), {
   ssr: false,
-  loading: () => <div className="fixed inset-0 bg-black" />,
+  loading: () => <BlankIntroExperience />,
 });
 
 export default function UniverseExperienceLoader() {

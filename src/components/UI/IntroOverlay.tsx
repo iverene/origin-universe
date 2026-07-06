@@ -11,7 +11,7 @@ export function IntroOverlay({ hidden }: IntroOverlayProps) {
         hidden ? "opacity-0" : "opacity-100"
       }`}
     >
-      <div className="max-w-5xl px-3">
+      <div className="cosmic-text-reveal max-w-5xl px-3 opacity-0">
         <h1 className="font-heading text-balance text-4xl font-semibold leading-[1.04] text-white sm:text-6xl lg:text-7xl">
           The Origin of the Universe
         </h1>

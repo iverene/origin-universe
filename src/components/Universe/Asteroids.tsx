@@ -2,7 +2,8 @@
 
 import { useFrame } from "@react-three/fiber";
 import { randomBetween } from "@/utils/random";
-import { useMemo, useRef } from "react";
+import { createRockTexture } from "@/utils/proceduralTextures";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 type AsteroidsProps = {
@@ -12,9 +13,14 @@ type AsteroidsProps = {
 export function Asteroids({ opacity = 1 }: AsteroidsProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const rockMap = useMemo(() => createRockTexture(44), []);
   const asteroids = useMemo(
     () =>
-      Array.from({ length: 22 }, () => ({
+      Array.from({ length: 30 }, () => ({
+        color: new THREE.Color("#8b8275").lerp(
+          new THREE.Color("#4f4a46"),
+          randomBetween(0, 0.72),
+        ),
         position: new THREE.Vector3(
           randomBetween(-62, 62),
           randomBetween(-34, 34),
@@ -39,6 +45,18 @@ export function Asteroids({ opacity = 1 }: AsteroidsProps) {
       })),
     [],
   );
+
+  useEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    asteroids.forEach((asteroid, index) => {
+      mesh.setColorAt(index, asteroid.color);
+    });
+    if (mesh.instanceColor) {
+      mesh.instanceColor.needsUpdate = true;
+    }
+  }, [asteroids]);
 
   useFrame((_, delta) => {
     const mesh = meshRef.current;
@@ -68,15 +86,18 @@ export function Asteroids({ opacity = 1 }: AsteroidsProps) {
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, asteroids.length]} frustumCulled={false}>
-      <dodecahedronGeometry args={[1, 0]} />
+      <icosahedronGeometry args={[1, 2]} />
       <meshStandardMaterial
-        color="#777082"
-        emissive="#111019"
-        emissiveIntensity={0.08}
-        metalness={0.05}
+        color="#8a8175"
+        emissive="#090807"
+        emissiveIntensity={0.025}
+        flatShading
+        map={rockMap}
+        metalness={0.02}
         opacity={opacity}
-        roughness={0.92}
+        roughness={0.98}
         transparent
+        vertexColors
       />
     </instancedMesh>
   );

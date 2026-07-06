@@ -17,7 +17,7 @@ type GalaxyProps = {
 function Galaxy({ opacity, position, rotation, scale, spiral }: GalaxyProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const groupRef = useRef<THREE.Group>(null);
-  const data = useMemo(() => createGalaxyData(spiral ? 1200 : 850, spiral), [spiral]);
+  const data = useMemo(() => createGalaxyData(spiral ? 2200 : 1500, spiral), [spiral]);
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -44,6 +44,16 @@ function Galaxy({ opacity, position, rotation, scale, spiral }: GalaxyProps) {
 
   return (
     <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
+      <mesh scale={[18, 7, 1]}>
+        <sphereGeometry args={[1, 32, 16]} />
+        <meshBasicMaterial
+          blending={THREE.AdditiveBlending}
+          color={spiral ? "#ffe4bd" : "#e8d7ff"}
+          depthWrite={false}
+          opacity={opacity * 0.14}
+          transparent
+        />
+      </mesh>
       <points frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[data.positions, 3]} />

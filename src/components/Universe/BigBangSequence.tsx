@@ -59,8 +59,8 @@ function createBigBangParticles(count: number): BigBangParticleData {
 
 function FirstSpark({ progress }: BigBangSequenceProps) {
   const ref = useRef<THREE.Mesh>(null);
-  const spark = smoothstep(0.018, 0.075, progress) * (1 - smoothstep(0.16, 0.24, progress));
-  const bloom = smoothstep(0.05, 0.16, progress);
+  const spark = smoothstep(0.004, 0.052, progress) * (1 - smoothstep(0.16, 0.24, progress));
+  const bloom = smoothstep(0.022, 0.14, progress);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
@@ -219,7 +219,7 @@ function PlasmaRibbons({ progress }: BigBangSequenceProps) {
 }
 
 export function BigBangSequence({ progress }: BigBangSequenceProps) {
-  const glow = smoothstep(0.03, 0.18, progress) * (1 - smoothstep(0.28, 0.42, progress));
+  const glow = smoothstep(0.01, 0.16, progress) * (1 - smoothstep(0.28, 0.42, progress));
 
   return (
     <group>

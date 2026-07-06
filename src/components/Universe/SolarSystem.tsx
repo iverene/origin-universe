@@ -2,6 +2,7 @@
 
 import { useFrame } from "@react-three/fiber";
 import { smoothstep } from "@/utils/easing";
+import { createEarthMaps, createMoonMaps } from "@/utils/proceduralTextures";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
@@ -19,17 +20,19 @@ export function SolarSystem({ progress }: SolarSystemProps) {
   const diskVisibility = smoothstep(0.69, 0.74, progress) * (1 - smoothstep(0.78, 0.84, progress));
   const earthFocus = smoothstep(0.77, 0.84, progress);
   const earthAngle = progress * Math.PI * 18 * 0.1 + 2.2;
+  const earthMaps = useMemo(() => createEarthMaps(), []);
+  const moonMaps = useMemo(() => createMoonMaps(), []);
   const earthPosition = useMemo(
     () => new THREE.Vector3(Math.cos(earthAngle) * 15.5, 0, Math.sin(earthAngle) * 15.5),
     [earthAngle],
   );
   const planetData = useMemo(
     () => [
-      { radius: 8.4, size: 0.35, color: "#a58b72", speed: 0.18 },
-      { radius: 11.2, size: 0.46, color: "#d6b17a", speed: 0.13 },
-      { radius: 15.5, size: 0.58, color: "#5e99d9", speed: 0.1 },
-      { radius: 20.5, size: 0.42, color: "#bb6a54", speed: 0.075 },
-      { radius: 30.5, size: 1.5, color: "#d4ad7a", speed: 0.045 },
+      { radius: 8.4, size: 0.35, color: "#8f8175", emissive: "#160f0a", roughness: 0.86, speed: 0.18 },
+      { radius: 11.2, size: 0.46, color: "#d1b37c", emissive: "#1b1208", roughness: 0.94, speed: 0.13 },
+      { radius: 15.5, size: 0.58, color: "#ffffff", emissive: "#071a3f", roughness: 0.58, speed: 0.1 },
+      { radius: 20.5, size: 0.42, color: "#b2644f", emissive: "#180905", roughness: 0.88, speed: 0.075 },
+      { radius: 30.5, size: 1.5, color: "#d8b27c", emissive: "#1a1107", roughness: 0.82, speed: 0.045 },
     ],
     [],
   );
@@ -67,10 +70,21 @@ export function SolarSystem({ progress }: SolarSystemProps) {
 
   return (
     <group ref={groupRef}>
-      <pointLight color="#fff2cf" distance={80} intensity={5.5 * visibility} position={[0, 0, 0]} />
+      <pointLight color="#fff0c6" distance={92} intensity={7.8 * visibility} position={[0, 0, 0]} />
+      <directionalLight color="#fff6dc" intensity={2.1 * visibility} position={[-12, 5, 8]} />
       <mesh>
-        <sphereGeometry args={[2.3, 32, 32]} />
-        <meshBasicMaterial color="#ffd89a" transparent opacity={0.85 * visibility} />
+        <sphereGeometry args={[2.3, 64, 64]} />
+        <meshBasicMaterial color="#fff0bd" transparent opacity={0.96 * visibility} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[2.76, 64, 64]} />
+        <meshBasicMaterial
+          blending={THREE.AdditiveBlending}
+          color="#ffb65a"
+          depthWrite={false}
+          opacity={0.18 * visibility}
+          transparent
+        />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[12.5, 0.12, 12, 180]} />
@@ -88,30 +102,61 @@ export function SolarSystem({ progress }: SolarSystemProps) {
         const z = Math.sin(angle) * planet.radius;
         const isEarth = index === 2;
         const focusedEarthSize = isEarth ? 1 + earthFocus * 2.2 : 1;
+        const planetScale = planet.size * focusedEarthSize;
 
         return (
           <mesh key={planet.radius} ref={isEarth ? earthRef : undefined} position={[x, 0, z]}>
-            <sphereGeometry args={[planet.size * focusedEarthSize, 32, 32]} />
+            <sphereGeometry args={[planetScale, 64, 64]} />
             <meshStandardMaterial
               color={planet.color}
-              emissive={isEarth ? "#0a285c" : "#130d08"}
-              emissiveIntensity={isEarth ? 0.28 + earthFocus * 0.4 : 0.08}
-              roughness={0.72}
+              emissive={planet.emissive}
+              emissiveIntensity={isEarth ? 0.1 + earthFocus * 0.12 : 0.045}
+              map={isEarth ? earthMaps.colorMap : undefined}
+              bumpMap={isEarth ? earthMaps.bumpMap : undefined}
+              bumpScale={isEarth ? 0.08 + earthFocus * 0.05 : 0}
+              metalness={0}
+              roughness={planet.roughness}
               transparent
               opacity={visibility}
             />
+            {index === 4 ? (
+              <mesh rotation={[Math.PI / 2.35, 0.24, 0.1]}>
+                <ringGeometry args={[planetScale * 1.35, planetScale * 1.95, 128]} />
+                <meshBasicMaterial
+                  blending={THREE.AdditiveBlending}
+                  color="#d7bc8e"
+                  depthWrite={false}
+                  opacity={visibility * 0.28}
+                  side={THREE.DoubleSide}
+                  transparent
+                />
+              </mesh>
+            ) : null}
           </mesh>
         );
       })}
 
       {earthFocus > 0.001 ? (
         <group position={earthPosition}>
+          <mesh>
+            <sphereGeometry args={[0.58 * (1 + earthFocus * 2.2) * 1.035, 64, 64]} />
+            <meshBasicMaterial
+              blending={THREE.AdditiveBlending}
+              color="#79c7ff"
+              depthWrite={false}
+              opacity={visibility * earthFocus * 0.11}
+              side={THREE.BackSide}
+              transparent
+            />
+          </mesh>
           <mesh ref={cloudsRef}>
-            <sphereGeometry args={[0.58 * (1 + earthFocus * 2.2) * 1.018, 32, 32]} />
+            <sphereGeometry args={[0.58 * (1 + earthFocus * 2.2) * 1.022, 64, 64]} />
             <meshBasicMaterial
               blending={THREE.AdditiveBlending}
               color="#ffffff"
-              opacity={visibility * earthFocus * 0.16}
+              depthWrite={false}
+              map={earthMaps.cloudMap}
+              opacity={visibility * earthFocus * 0.42}
               transparent
             />
           </mesh>
@@ -129,8 +174,16 @@ export function SolarSystem({ progress }: SolarSystemProps) {
             />
           </mesh>
           <mesh ref={moonRef} position={[2.5, 0.1, 0]}>
-            <sphereGeometry args={[0.18 + earthFocus * 0.18, 18, 18]} />
-            <meshStandardMaterial color="#c9c7bd" roughness={0.9} transparent opacity={visibility * earthFocus} />
+            <sphereGeometry args={[0.18 + earthFocus * 0.18, 48, 48]} />
+            <meshStandardMaterial
+              bumpMap={moonMaps.bumpMap}
+              bumpScale={0.04}
+              color="#d4d0c6"
+              map={moonMaps.colorMap}
+              roughness={0.96}
+              transparent
+              opacity={visibility * earthFocus}
+            />
           </mesh>
         </group>
       ) : null}

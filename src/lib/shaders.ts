@@ -20,7 +20,7 @@ export const STAR_VERTEX = `
     p.y += cos(uTime * 0.019 + aPhase * 0.7) * 2.1;
 
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-    float twinkle = 0.72 + sin(uTime * aTwinkle + aPhase) * 0.28;
+    float twinkle = 0.82 + sin(uTime * aTwinkle + aPhase) * 0.14;
     gl_PointSize = aSize * twinkle * uScale * (360.0 / max(24.0, -mvPosition.z));
     gl_Position = projectionMatrix * mvPosition;
 
@@ -38,13 +38,13 @@ export const STAR_FRAGMENT = `
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     float core = smoothstep(0.5, 0.02, d);
-    float halo = smoothstep(0.5, 0.0, d) * 0.35;
-    float sparkle = pow(max(0.0, 1.0 - abs(uv.x) * 9.0), 5.0) * 0.14;
-    sparkle += pow(max(0.0, 1.0 - abs(uv.y) * 9.0), 5.0) * 0.14;
+    float halo = smoothstep(0.5, 0.0, d) * 0.24;
+    float sparkle = pow(max(0.0, 1.0 - abs(uv.x) * 14.0), 7.0) * 0.045;
+    sparkle += pow(max(0.0, 1.0 - abs(uv.y) * 14.0), 7.0) * 0.045;
     float alpha = (core + halo + sparkle) * vAlpha * uOpacity;
 
     if (alpha < 0.015) discard;
-    gl_FragColor = vec4(vColor * (0.9 + vAlpha * 0.45), alpha);
+    gl_FragColor = vec4(vColor * (0.82 + vAlpha * 0.28), alpha);
   }
 `;
 
@@ -103,12 +103,13 @@ export const NEBULA_FRAGMENT = `
     float radial = smoothstep(0.68, 0.08, length(centered * vec2(1.16, 0.82)));
     vec2 drift = vec2(uTime * 0.008, -uTime * 0.005);
     float cloud = fbm(vUv * 3.0 + drift + uSeed);
-    cloud += fbm(vUv * 7.0 - drift * 0.6 + uSeed * 1.7) * 0.45;
-    cloud = smoothstep(0.38, 1.1, cloud);
+    float filaments = fbm(vUv * vec2(11.0, 4.0) - drift * 0.6 + uSeed * 1.7);
+    cloud += filaments * 0.38;
+    cloud = smoothstep(0.44, 1.16, cloud);
 
     vec3 color = mix(uColorA, uColorB, cloud);
     color = mix(color, uColorC, smoothstep(0.72, 1.2, cloud + centered.x * 0.22));
-    float alpha = cloud * radial * uOpacity;
+    float alpha = cloud * radial * uOpacity * (0.72 + filaments * 0.42);
 
     if (alpha < 0.01) discard;
     gl_FragColor = vec4(color, alpha);
@@ -140,7 +141,9 @@ export const GALAXY_FRAGMENT = `
 
   void main() {
     float d = length(gl_PointCoord - 0.5);
-    float alpha = smoothstep(0.5, 0.0, d) * vAlpha * uOpacity;
+    float core = smoothstep(0.28, 0.0, d);
+    float halo = smoothstep(0.5, 0.0, d) * 0.62;
+    float alpha = (core + halo) * vAlpha * uOpacity;
     if (alpha < 0.01) discard;
     gl_FragColor = vec4(vColor, alpha);
   }

@@ -27,13 +27,13 @@ export function createStarData(count: number, depth: number, spread: number): Po
     positions[index * 3 + 1] = randomBetween(-ySpread, ySpread);
     positions[index * 3 + 2] = -randomBetween(32, depth);
 
-    const bright = Math.random() > 0.88;
-    sizes[index] = bright ? randomBetween(3.8, 7.4) : randomBetween(1.1, 3.3);
-    twinkles[index] = randomBetween(0.35, 1.65);
+    const bright = Math.random() > 0.92;
+    sizes[index] = bright ? randomBetween(2.8, 5.8) : randomBetween(0.85, 2.45);
+    twinkles[index] = randomBetween(0.18, 0.92);
     phases[index] = randomBetween(0, Math.PI * 2);
 
     const color = starPalette[Math.floor(Math.random() * starPalette.length)];
-    const intensity = bright ? randomBetween(1.0, 1.45) : randomBetween(0.62, 1.05);
+    const intensity = bright ? randomBetween(0.95, 1.32) : randomBetween(0.54, 0.94);
     colors[index * 3] = color.r * intensity;
     colors[index * 3 + 1] = color.g * intensity;
     colors[index * 3 + 2] = color.b * intensity;
@@ -51,18 +51,18 @@ export function createGalaxyData(count: number, spiral = true): GalaxyPointCloud
   const core = new THREE.Color("#fff8e7");
 
   for (let index = 0; index < count; index++) {
-    const radius = Math.pow(Math.random(), 1.8) * 38;
+    const radius = Math.pow(Math.random(), 1.9) * 42;
     const arm = spiral ? (index % 4) * (Math.PI / 2) : Math.random() * Math.PI * 2;
-    const swirl = spiral ? radius * 0.18 : 0;
-    const angle = arm + swirl + randomBetween(-0.34, 0.34);
-    const thickness = spiral ? randomBetween(-1.2, 1.2) : randomBetween(-5, 5);
+    const swirl = spiral ? radius * 0.2 : 0;
+    const angle = arm + swirl + randomBetween(-0.42, 0.42);
+    const thickness = spiral ? randomBetween(-0.9, 0.9) : randomBetween(-5, 5);
 
-    positions[index * 3] = Math.cos(angle) * radius + randomBetween(-1.8, 1.8);
+    positions[index * 3] = Math.cos(angle) * radius + randomBetween(-2.1, 2.1);
     positions[index * 3 + 1] =
       Math.sin(angle) * radius * (spiral ? 0.42 : 0.3) + thickness;
-    positions[index * 3 + 2] = randomBetween(-2.5, 2.5);
+    positions[index * 3 + 2] = randomBetween(-1.8, 1.8);
 
-    sizes[index] = randomBetween(1.2, 4.8);
+    sizes[index] = randomBetween(0.9, 3.8) * (1.2 - Math.min(0.62, radius / 72));
     const mixAmount = Math.min(1, radius / 38);
     const color = core.clone().lerp(index % 3 === 0 ? warm : cool, mixAmount);
     colors[index * 3] = color.r;

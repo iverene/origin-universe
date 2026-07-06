@@ -12,7 +12,7 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
   const nextStart = getNextEraStart(activeEra);
   const eraLength = Math.max(0.001, nextStart - activeEra.start);
   const localProgress = clamp((progress - activeEra.start) / eraLength);
-  const introOpacity = 1 - smoothstep(0.001, 0.008, progress);
+  const introOpacity = 1 - smoothstep(0, 0.004, progress);
   const subtitleOpacity =
     activeEra.id === "final"
       ? smoothstep(0.08, 0.28, localProgress)
@@ -44,10 +44,10 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
         className="pointer-events-none fixed left-1/2 top-1/2 z-40 w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 px-6 text-center transition-opacity duration-500"
         style={{
           opacity: introOpacity,
-          visibility: progress > 0.01 ? "hidden" : "visible",
+          visibility: progress > 0.006 ? "hidden" : "visible",
         }}
       >
-        <div className="animate-[cosmicReveal_3s_ease-out_forwards] opacity-0">
+        <div className="cosmic-text-reveal opacity-0">
           <h1 className="font-heading text-balance text-4xl font-semibold leading-tight text-white [text-shadow:0_2px_22px_rgba(0,0,0,0.98),0_0_34px_rgba(170,210,255,0.38)] sm:text-6xl lg:text-7xl">
             The Origin of the Universe
           </h1>
@@ -58,19 +58,21 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
       </div>
 
       <div
-        className="animate-[cosmicReveal_4s_ease-out_forwards] pointer-events-none fixed bottom-12 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-4 px-6 text-center transition-opacity duration-500 md:bottom-16"
+        className="pointer-events-none fixed bottom-12 left-1/2 z-40 -translate-x-1/2 px-6 text-center transition-opacity duration-500 md:bottom-16"
         style={{
           opacity: introOpacity,
-          visibility: progress > 0.01 ? "hidden" : "visible",
+          visibility: progress > 0.006 ? "hidden" : "visible",
         }}
       >
-        <p className="font-body text-xs font-semibold uppercase tracking-[0.32em] text-sky-100 [text-shadow:0_2px_16px_rgba(0,0,0,0.95),0_0_22px_rgba(125,190,255,0.46)] sm:text-sm">
-          Scroll to begin
-        </p>
-        <span
-          aria-hidden
-          className="h-10 w-px animate-[scrollPulse_1.7s_ease-in-out_infinite] bg-gradient-to-b from-sky-100 via-sky-300/80 to-transparent"
-        />
+        <div className="cosmic-scroll-reveal flex flex-col items-center gap-4">
+          <p className="font-body text-xs font-semibold uppercase tracking-[0.32em] text-sky-100 [text-shadow:0_2px_16px_rgba(0,0,0,0.95),0_0_22px_rgba(125,190,255,0.46)] sm:text-sm">
+            Scroll to begin
+          </p>
+          <span
+            aria-hidden
+            className="h-10 w-px animate-[scrollPulse_1.7s_ease-in-out_infinite] bg-gradient-to-b from-sky-100 via-sky-300/80 to-transparent"
+          />
+        </div>
       </div>
 
       <div className="pointer-events-none fixed bottom-10 left-1/2 z-40 w-full max-w-4xl -translate-x-1/2 px-6 text-center md:bottom-14">

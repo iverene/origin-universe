@@ -11,12 +11,12 @@ type BirthEnergyProps = {
 
 export function BirthEnergy({ progress }: BirthEnergyProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const opacity = smoothstep(0.035, 0.1, progress) * (1 - smoothstep(0.22, 0.34, progress));
+  const opacity = smoothstep(0.014, 0.078, progress) * (1 - smoothstep(0.22, 0.34, progress));
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
     if (groupRef.current) {
-      const scale = 1 + smoothstep(0.06, 0.2, progress) * 45;
+      const scale = 1 + smoothstep(0.032, 0.18, progress) * 45;
       groupRef.current.scale.setScalar(scale);
       groupRef.current.rotation.x = time * 0.08;
       groupRef.current.rotation.y = time * 0.11;

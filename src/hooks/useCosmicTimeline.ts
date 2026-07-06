@@ -21,10 +21,10 @@ export function useCosmicTimeline(containerRef: RefObject<HTMLElement | null>) {
 
     const lenis = new Lenis({
       anchors: false,
-      lerp: 0.075,
+      lerp: 0.16,
       smoothWheel: true,
       syncTouch: true,
-      wheelMultiplier: 0.82,
+      wheelMultiplier: 1.05,
     });
 
     lenis.on("scroll", ScrollTrigger.update);
@@ -40,9 +40,9 @@ export function useCosmicTimeline(containerRef: RefObject<HTMLElement | null>) {
       trigger: container,
       start: "top top",
       end: "bottom bottom",
-      scrub: 1.2,
+      scrub: 0.2,
       onUpdate: (self) => {
-        setProgress(Number(self.progress.toFixed(4)));
+        setProgress(self.progress);
       },
     });
 

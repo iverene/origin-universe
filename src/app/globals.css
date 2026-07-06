@@ -83,19 +83,24 @@ h6 {
 @keyframes cosmicReveal {
   0% {
     opacity: 0;
-    transform: translateY(10px);
-    filter: blur(8px);
-  }
-  38% {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(8px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
   }
+}
+
+.cosmic-text-reveal,
+.cosmic-scroll-reveal {
+  animation-fill-mode: both;
+  will-change: opacity;
+}
+
+.cosmic-text-reveal {
+  animation: cosmicReveal 1.25s ease-in both;
+}
+
+.cosmic-scroll-reveal {
+  animation: cosmicReveal 1.1s ease-in 220ms both;
 }
 
 @keyframes scrollPulse {

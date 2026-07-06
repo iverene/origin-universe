@@ -42,7 +42,7 @@ function createMilkyWayPoints(count: number) {
 export function MilkyWayFocus({ progress }: MilkyWayFocusProps) {
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const data = useMemo(() => createMilkyWayPoints(2600), []);
+  const data = useMemo(() => createMilkyWayPoints(4200), []);
   const visibility = smoothstep(0.61, 0.72, progress) * (1 - smoothstep(0.8, 0.9, progress));
   const approach = smoothstep(0.66, 0.78, progress);
   const material = useMemo(
@@ -75,6 +75,16 @@ export function MilkyWayFocus({ progress }: MilkyWayFocusProps) {
 
   return (
     <group ref={groupRef}>
+      <mesh scale={[40, 8, 1]}>
+        <sphereGeometry args={[1, 48, 20]} />
+        <meshBasicMaterial
+          blending={THREE.AdditiveBlending}
+          color="#ffe1ad"
+          depthWrite={false}
+          opacity={visibility * 0.18}
+          transparent
+        />
+      </mesh>
       <points frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[data.positions, 3]} />
@@ -83,6 +93,15 @@ export function MilkyWayFocus({ progress }: MilkyWayFocusProps) {
         </bufferGeometry>
         <primitive ref={materialRef} object={material} attach="material" />
       </points>
+      <mesh position={[0, 0.15, 0.4]} rotation={[Math.PI / 2, 0, 0]} scale={[58, 5.2, 1]}>
+        <circleGeometry args={[1, 96]} />
+        <meshBasicMaterial
+          color="#020207"
+          depthWrite={false}
+          opacity={visibility * 0.48}
+          transparent
+        />
+      </mesh>
     </group>
   );
 }
