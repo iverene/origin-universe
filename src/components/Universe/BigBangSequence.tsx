@@ -59,7 +59,7 @@ function createBigBangParticles(count: number): BigBangParticleData {
 
 function FirstSpark({ progress }: BigBangSequenceProps) {
   const ref = useRef<THREE.Mesh>(null);
-  const spark = smoothstep(0.004, 0.052, progress) * (1 - smoothstep(0.16, 0.24, progress));
+  const spark = smoothstep(0.018, 0.045, progress) * (1 - smoothstep(0.115, 0.155, progress));
   const bloom = smoothstep(0.022, 0.14, progress);
 
   useFrame(({ clock }) => {
@@ -86,9 +86,9 @@ function FirstSpark({ progress }: BigBangSequenceProps) {
 function ExpandingParticles({ progress }: BigBangSequenceProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const data = useMemo(() => createBigBangParticles(6200), []);
-  const expansion = smoothstep(0.07, 0.26, progress);
-  const opacity = smoothstep(0.055, 0.12, progress) * (1 - smoothstep(0.3, 0.43, progress));
-  const motion = smoothstep(0.08, 0.24, progress);
+  const expansion = smoothstep(0.045, 0.185, progress);
+  const opacity = smoothstep(0.035, 0.07, progress) * (1 - smoothstep(0.18, 0.225, progress));
+  const motion = smoothstep(0.045, 0.19, progress);
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -133,8 +133,8 @@ function ExpandingParticles({ progress }: BigBangSequenceProps) {
 
 function ShockwaveRings({ progress }: BigBangSequenceProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const expansion = smoothstep(0.075, 0.27, progress);
-  const opacity = smoothstep(0.065, 0.12, progress) * (1 - smoothstep(0.26, 0.38, progress));
+  const expansion = smoothstep(0.04, 0.19, progress);
+  const opacity = smoothstep(0.035, 0.065, progress) * (1 - smoothstep(0.17, 0.215, progress));
 
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
@@ -169,8 +169,8 @@ function ShockwaveRings({ progress }: BigBangSequenceProps) {
 
 function PlasmaRibbons({ progress }: BigBangSequenceProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const opacity = smoothstep(0.1, 0.2, progress) * (1 - smoothstep(0.28, 0.43, progress));
-  const expansion = smoothstep(0.09, 0.3, progress);
+  const opacity = smoothstep(0.075, 0.13, progress) * (1 - smoothstep(0.18, 0.23, progress));
+  const expansion = smoothstep(0.06, 0.2, progress);
   const curves = useMemo(
     () =>
       Array.from({ length: 7 }, (_, index) => {
@@ -219,7 +219,7 @@ function PlasmaRibbons({ progress }: BigBangSequenceProps) {
 }
 
 export function BigBangSequence({ progress }: BigBangSequenceProps) {
-  const glow = smoothstep(0.01, 0.16, progress) * (1 - smoothstep(0.28, 0.42, progress));
+  const glow = smoothstep(0.02, 0.08, progress) * (1 - smoothstep(0.18, 0.23, progress));
 
   return (
     <group>

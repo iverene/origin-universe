@@ -17,6 +17,12 @@ type StellarSeed = {
   size: number;
 };
 
+const protostars: Array<{ color: string; position: [number, number, number]; scale: number }> = [
+  { color: "#b9dcff", position: [-34, 14, -175], scale: 1.2 },
+  { color: "#fff0c7", position: [48, -18, -235], scale: 0.9 },
+  { color: "#ffd1a0", position: [8, 26, -310], scale: 1.45 },
+];
+
 function createStellarSeeds(count: number): StellarSeed[] {
   return Array.from({ length: count }, (_, index) => ({
     color: index % 5 === 0 ? "#9dd8ff" : index % 5 === 1 ? "#fff5d6" : index % 5 === 2 ? "#ffc987" : "#dbefff",
@@ -64,6 +70,26 @@ export function FirstStars({ progress }: FirstStarsProps) {
           </mesh>
         ))}
       </group>
+      {protostars.map((star, index) => {
+        const ignition = smoothstep(0.415 + index * 0.018, 0.455 + index * 0.018, progress);
+        return (
+          <group key={star.color} position={star.position} scale={star.scale * ignition}>
+            <mesh>
+              <sphereGeometry args={[1.15, 48, 48]} />
+              <meshBasicMaterial color={star.color} />
+            </mesh>
+            <mesh scale={2.6}>
+              <sphereGeometry args={[1, 32, 32]} />
+              <meshBasicMaterial blending={THREE.AdditiveBlending} color={star.color} depthWrite={false} opacity={nursery * 0.12} transparent />
+            </mesh>
+            <mesh rotation={[Math.PI / 2.5, 0.25 * index, 0]}>
+              <ringGeometry args={[1.7, 5.8, 128]} />
+              <meshBasicMaterial blending={THREE.AdditiveBlending} color={index === 0 ? "#86baff" : "#e3a76e"} depthWrite={false} opacity={nursery * 0.22} side={THREE.DoubleSide} transparent />
+            </mesh>
+            <pointLight color={star.color} distance={75} intensity={ignition * nursery * 5} />
+          </group>
+        );
+      })}
       <pointLight color="#dbeeff" distance={360} intensity={nursery * 3.4} position={[-30, 22, -180]} />
       <pointLight color="#ffd49a" distance={300} intensity={nursery * 1.8} position={[66, -28, -280]} />
     </group>

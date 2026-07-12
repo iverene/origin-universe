@@ -1,7 +1,28 @@
 "use client";
 
-import { type CosmicEra, getNextEraStart } from "@/lib/timeline";
+import { cosmicEras, type CosmicEra, getNextEraStart } from "@/lib/timeline";
 import { clamp, smoothstep } from "@/utils/easing";
+import type { CSSProperties } from "react";
+
+const transitionByEra: Record<string, string> = {
+  "before-everything": "era-void",
+  "big-bang": "era-impact",
+  inflation: "era-stretch",
+  "birth-of-matter": "era-particles",
+  "first-atoms": "era-focus",
+  "dark-ages": "era-eclipse",
+  "first-stars": "era-ignite",
+  galaxies: "era-orbit",
+  "galaxy-clusters": "era-depth",
+  "milky-way": "era-sweep",
+  "solar-system": "era-orbit",
+  earth: "era-focus",
+  life: "era-rise",
+  today: "era-impact",
+  "beyond-humanity": "era-stretch",
+  "far-future": "era-eclipse",
+  final: "era-final",
+};
 
 type TimelineHudProps = {
   activeEra: CosmicEra;
@@ -18,6 +39,11 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
       ? smoothstep(0.04, 0.16, localProgress)
       : smoothstep(0.015, 0.1, localProgress) * (1 - smoothstep(0.72, 0.94, localProgress));
   const markerOpacity = smoothstep(0.006, 0.02, progress);
+  const progressIndicatorOpacity = smoothstep(0.002, 0.012, progress);
+  const lines = activeEra.subtitle.split("\n").filter(Boolean);
+  const activeEraIndex = cosmicEras.findIndex((era) => era.id === activeEra.id);
+  const chapterName = activeEra.id.replaceAll("-", " ");
+  const progressPercent = Math.round(progress * 100);
 
   return (
     <>
@@ -29,6 +55,44 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
         aria-hidden
         className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-56 bg-gradient-to-t from-black/78 via-black/36 to-transparent"
       />
+      <div aria-hidden className="cosmic-horizon pointer-events-none fixed inset-0 z-20" />
+
+      <div
+        className="cosmic-progress pointer-events-none fixed left-5 top-1/2 z-40 hidden -translate-y-1/2 transition-opacity duration-700 md:block"
+        role="progressbar"
+        aria-label={`Cosmic journey: ${chapterName}`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progressPercent}
+        aria-hidden={progressIndicatorOpacity === 0}
+        style={{
+          opacity: progressIndicatorOpacity,
+          visibility: progressIndicatorOpacity === 0 ? "hidden" : "visible",
+        }}
+      >
+        <div className="mb-5">
+          <div>
+            <p className="font-science text-[0.56rem] uppercase tracking-[0.28em] text-sky-200/65">Cosmic journey</p>
+            <p className="font-heading mt-1 max-w-36 text-sm font-medium capitalize leading-tight text-white/95">{chapterName}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <div className="relative h-56 w-1.5 overflow-hidden rounded-full bg-white/10 ring-1 ring-white/10">
+            <span className="absolute inset-x-0 top-0 rounded-full bg-gradient-to-b from-white via-sky-200 to-cyan-400 shadow-[0_0_16px_rgba(125,211,252,.9)] transition-[height] duration-150" style={{ height: `${progressPercent}%` }} />
+          </div>
+          <div className="flex h-56 flex-col justify-between py-0.5">
+            {cosmicEras.map((era, index) => (
+              <span
+                key={era.id}
+                className={`block h-px transition-all duration-300 ${index === activeEraIndex ? "w-5 bg-sky-200 shadow-[0_0_8px_#7dd3fc]" : index < activeEraIndex ? "w-3 bg-white/45" : "w-2 bg-white/20"}`}
+              />
+            ))}
+          </div>
+        </div>
+
+
+      </div>
 
       <div className="pointer-events-none fixed left-1/2 top-7 z-40 -translate-x-1/2 text-center md:top-9">
         <p
@@ -75,13 +139,26 @@ export function TimelineHud({ activeEra, progress }: TimelineHudProps) {
         </div>
       </div>
 
-      <div className="pointer-events-none fixed bottom-10 left-1/2 z-40 w-full max-w-4xl -translate-x-1/2 px-6 text-center md:bottom-14">
-        <p
-          className="font-body mx-auto max-w-3xl whitespace-pre-line text-pretty text-sm font-medium leading-7 text-white/86 [text-shadow:0_2px_18px_rgba(0,0,0,0.98),0_0_30px_rgba(120,170,255,0.18)] transition-opacity duration-700 md:text-base md:leading-8"
+      <div className="pointer-events-none fixed inset-0 z-40 flex items-end justify-center overflow-hidden px-6 pb-10 sm:pb-12 md:pb-16">
+        <div
+          key={activeEra.id}
+          className={`era-story ${transitionByEra[activeEra.id] ?? "era-rise"} w-full max-w-3xl`}
           style={{ opacity: subtitleOpacity }}
         >
-          {activeEra.subtitle}
-        </p>
+          <div className="era-story__frame">
+            <p className="font-heading text-balance text-lg font-medium leading-[1.3] text-white/92 [text-shadow:0_3px_20px_rgba(0,0,0,1),0_0_30px_rgba(130,190,255,.2)] sm:text-2xl md:text-3xl">
+              {lines.map((line, index) => (
+                <span className="era-story__line" style={{ "--line": index } as CSSProperties} key={`${activeEra.id}-${index}`}>
+                  {line.split(" ").map((word, wordIndex) => (
+                    <span className="era-story__word" style={{ "--word": wordIndex + index * 4 } as CSSProperties} key={`${activeEra.id}-${index}-${wordIndex}`}>
+                      {word}
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </p>
+          </div>
+        </div>
       </div>
     </>
   );
