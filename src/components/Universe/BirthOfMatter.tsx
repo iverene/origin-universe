@@ -100,10 +100,10 @@ function MatterParticleField({ progress }: BirthOfMatterProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const nearData = useMemo(() => createMatterParticles(2600, 92, 240), []);
   const farData = useMemo(() => createMatterParticles(4200, 260, 640), []);
-  const emergence = smoothstep(0.17, 0.24, progress);
-  const cooling = smoothstep(0.22, 0.36, progress);
-  const fadeOut = smoothstep(0.36, 0.46, progress);
-  const opacity = emergence * (1 - fadeOut * 0.42);
+  const emergence = smoothstep(0.185, 0.215, progress);
+  const cooling = smoothstep(0.22, 0.285, progress);
+  const fadeOut = smoothstep(0.285, 0.335, progress);
+  const opacity = emergence * (1 - fadeOut);
   const flow = 1 - cooling * 0.52;
   const material = useMemo(
     () =>
@@ -155,8 +155,8 @@ function MatterParticleField({ progress }: BirthOfMatterProps) {
 
 function MatterEnergyStreams({ progress }: BirthOfMatterProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const visibility = smoothstep(0.16, 0.23, progress) * (1 - smoothstep(0.31, 0.45, progress));
-  const cooling = smoothstep(0.22, 0.36, progress);
+  const visibility = smoothstep(0.18, 0.215, progress) * (1 - smoothstep(0.27, 0.32, progress));
+  const cooling = smoothstep(0.22, 0.285, progress);
   const curves = useMemo(
     () =>
       Array.from({ length: 9 }, (_, index) => {
@@ -205,7 +205,7 @@ function MatterEnergyStreams({ progress }: BirthOfMatterProps) {
 
 function CollisionFlashes({ progress }: BirthOfMatterProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const visibility = smoothstep(0.2, 0.28, progress) * (1 - smoothstep(0.35, 0.48, progress));
+  const visibility = smoothstep(0.2, 0.225, progress) * (1 - smoothstep(0.265, 0.305, progress));
   const flashes = useMemo(() => createCollisionFlashes(24), []);
 
   useFrame(({ clock }) => {
@@ -235,7 +235,7 @@ function CollisionFlashes({ progress }: BirthOfMatterProps) {
 }
 
 export function BirthOfMatter({ progress }: BirthOfMatterProps) {
-  const light = smoothstep(0.18, 0.3, progress) * (1 - smoothstep(0.36, 0.5, progress));
+  const light = smoothstep(0.19, 0.23, progress) * (1 - smoothstep(0.28, 0.33, progress));
 
   return (
     <group>

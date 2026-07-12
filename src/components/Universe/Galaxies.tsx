@@ -82,6 +82,9 @@ export function Galaxies({ opacity = 1 }: GalaxiesProps) {
         scale={1.34}
         spiral={false}
       />
+      <Galaxy opacity={opacity * 0.72} position={[-210, 82, -980]} rotation={[0.45, 0.1, 0.5]} scale={0.62} spiral />
+      <Galaxy opacity={opacity * 0.6} position={[220, -92, -1080]} rotation={[-0.2, 0.5, -0.35]} scale={0.74} spiral={false} />
+      <Galaxy opacity={opacity * 0.52} position={[-42, 110, -1160]} rotation={[0.15, -0.45, 0.18]} scale={0.5} spiral />
     </group>
   );
 }

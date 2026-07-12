@@ -16,6 +16,7 @@ import { Asteroids } from "@/components/Universe/Asteroids";
 import { BigBangSequence } from "@/components/Universe/BigBangSequence";
 import { BirthOfMatter } from "@/components/Universe/BirthOfMatter";
 import { DistantFuture } from "@/components/Universe/DistantFuture";
+import { CosmicWeb } from "@/components/Universe/CosmicWeb";
 import { FirstLight } from "@/components/Universe/FirstLight";
 import { FirstStars } from "@/components/Universe/FirstStars";
 import { Galaxies } from "@/components/Universe/Galaxies";
@@ -91,6 +92,7 @@ export function UniverseScene({ progress }: UniverseSceneProps) {
       <Nebulae opacity={nebulaOpacity} />
       <FirstStars progress={progress} />
       <Galaxies opacity={galaxyOpacity} />
+      <CosmicWeb progress={progress} />
       <MilkyWayFocus progress={progress} />
       <StarField count={5200} depth={980} opacity={starOpacity} spread={360} speed={3.2 + progress * 3.8} scale={1.0} />
       <StarField count={2400} depth={420} opacity={starOpacity * 0.85} spread={180} speed={5.8 + progress * 4.8} scale={0.8} />
